@@ -11,7 +11,7 @@ app.use(express.json());
 const API_KEY = process.env.OPENAI_API_KEY;
 const COHERE_KEY = process.env.COHERE_KEY;
 
-co.init(COHERE_KEY);
+//co.init(COHERE_KEY);
 
 app.post("/cohere", async (req, res) => {
   const data = req.body;
@@ -20,16 +20,16 @@ app.post("/cohere", async (req, res) => {
     ////////////////
 
     try {
-      const response = await co.generate({
+      /* const response = await co.generate({
         model: "command-nightly",
         prompt: prompt,
         max_tokens: 200,
         temperature: 0,
-      });
-      /* const response2 = await response.json();
-      console.log(response2); */
-      console.log(response.body.generations[0]);
-      res.json("response2.choices[0].text");
+      }); */
+      const response2 = await response.json();
+      console.log(response2);
+      //console.log(response.body.generations[0]);
+      res.json(response2.choices[0].text);
     } catch (error) {
       console.log(error);
     }
@@ -40,7 +40,7 @@ app.post("/openai-api", async (req, res) => {
   const data = req.body;
   console.log(data);
   if (data.lista) {
-    let prompt = `Eres un cocinero.Si el contenido de esta LISTA:${data.lista} es una lista de ingredientes para cocinar quiero que agregues a esa lista  sal, pimienta, agua, azucar, aceite y crees una receta usando solamente ingredientes de esa lista. Investiga cual es la forma correcta de usar el producto Maggi. Si no,  responde:"Esto no parece una lista de ingredientes".  Utiliza solamente ingredientes de la LISTA, no es necesario que uses todos los ingredientes. Devuelve la receta formateada como un <div> HTML. Utiliza solamente ingredientes de la LISTA.`;
+    let prompt = `Eres un cocinero.Crea una receta usando solamente ingredientes de esta LISTA:${data.lista}. Investiga cual es la forma correcta de usar el producto Maggi.  No es necesario que uses todos los ingredientes de la LISTA. Dame el resultado como si fueras una amiga, en forma casual, puedes agregar alguna broma ligera. Comienza con "Te tengo una receta deliciosa: ", o algo parecido. Menciona tambien las cantidades necesarias para 2 porciones de esta receta.`;
     ////////////////
     const options = {
       method: "POST",
