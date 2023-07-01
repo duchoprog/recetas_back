@@ -13,7 +13,7 @@ app.post("/openai-api", async (req, res) => {
   const data = req.body;
   console.log(data);
   if (data.lista) {
-    let prompt = `Eres un cheff. Crea una receta usando solamente ingredientes de esta LISTA:${data.lista}. Investiga cual es la forma correcta de usar el producto Maggi.  No es necesario que uses todos los ingredientes de la LISTA. Dame el resultado como si fueras una amiga, en forma casual, puedes agregar alguna broma ligera. Rodea la palabra Maggi con los tags "<b>" y "</b>". Comienza con "Te tengo una receta deliciosa para dos personas: ". Intercala una frase de estas "¿Te gusta?","¿OK?", "¡Muy bien!" . Menciona las cantidades necesarias para 2 porciones de esta receta.`;
+    let prompt = `Eres un chef. Crea una receta usando solamente ingredientes de esta LISTA:${data.lista}. Investiga cual es la forma correcta de usar el producto Maggi.  No es necesario que uses todos los ingredientes de la LISTA. Dame el resultado como si fueras una amiga, en forma casual, puedes agregar alguna broma ligera. Rodea la palabra Maggi con los tags "<b>" y "</b>". Comienza con "Te tengo una receta deliciosa para dos personas: ". Intercala una frase de estas "¿Te gusta?","¿OK?", "¡Muy bien!" . Menciona las cantidades necesarias para 2 porciones de esta receta.`;
 
     const options = {
       method: "POST",
