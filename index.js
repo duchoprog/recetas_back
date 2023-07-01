@@ -1,47 +1,20 @@
+require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const app = express();
-require("dotenv").config();
-const co = require("cohere-ai");
-//const gr = require("./generateRecipe.js");
 
+const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 
 const API_KEY = process.env.OPENAI_API_KEY;
-const COHERE_KEY = process.env.COHERE_KEY;
-
-//co.init(COHERE_KEY);
-
-app.post("/cohere", async (req, res) => {
-  const data = req.body;
-  if (data.lista) {
-    let prompt = `You are a chef. These ingredients belong to the SAVORY AND SPICY group: salt, pepper, MAGGI soup cubes, olives, anchovies. These ingredients belong to the SWEET group: dulce de leche, sugar, honey, grapes, peaches. Use some  of the ingredients in this LIST: ${data.lista}, oil, salt, Maggi cubes, and pepper to create a delicious recipe. You don't need to use all the ingredients, and it is not allowed to have ingredients from the SAVORY AND SPICY group together with ingredients from the SWEET group in the same recipe. Return the recipe translated into Spanish formatted as an HTML <div>. Use only ingredients from the LIST, you don't need to use all the ingredients, and it is not allowed to have ingredients from the SAVORY AND SPICY group together with ingredients from the SWEET group in the same recipe.`;
-    ////////////////
-
-    try {
-      /* const response = await co.generate({
-        model: "command-nightly",
-        prompt: prompt,
-        max_tokens: 200,
-        temperature: 0,
-      }); */
-      const response2 = await response.json();
-      console.log(response2);
-      //console.log(response.body.generations[0]);
-      res.json(response2.choices[0].text);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-});
 
 app.post("/openai-api", async (req, res) => {
   const data = req.body;
   console.log(data);
   if (data.lista) {
     let prompt = `Eres un cocinero.Crea una receta usando solamente ingredientes de esta LISTA:${data.lista}. Investiga cual es la forma correcta de usar el producto Maggi.  No es necesario que uses todos los ingredientes de la LISTA. Dame el resultado como si fueras una amiga, en forma casual, puedes agregar alguna broma ligera. Comienza con "Te tengo una receta deliciosa: ", o algo parecido. Menciona tambien las cantidades necesarias para 2 porciones de esta receta.`;
-    ////////////////
+
     const options = {
       method: "POST",
       headers: {
@@ -71,5 +44,9 @@ app.post("/openai-api", async (req, res) => {
     }
   }
 });
-
-app.listen(8000);
+app.all("*", (req, res) => {
+  res.send("acceso denegado");
+});
+app.listen(PORT, () => {
+  console.log(`listening on PORT ${PORT}`);
+});
