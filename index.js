@@ -1,4 +1,5 @@
 require("dotenv").config();
+const { Configuration, OpenAIApi } = require("openai");
 const cors = require("cors");
 const express = require("express");
 const app = express();
@@ -13,9 +14,25 @@ app.post("/openai-api", async (req, res) => {
   const data = req.body;
   console.log(data);
   if (data.lista) {
-    let prompt = `Eres un chef. Crea una receta usando solamente ingredientes de esta LISTA:${data.lista}. Investiga cual es la forma correcta de usar el producto Maggi.  No es necesario que uses todos los ingredientes de la LISTA. Dame el resultado como si fueras una amiga, en forma casual, puedes agregar alguna broma ligera. Rodea la palabra Maggi con los tags "<b>" y "</b>". Comienza con "Te tengo una receta deliciosa para dos personas: ". Intercala una frase de estas "¿Te gusta?","¿OK?", "¡Muy bien!" . Menciona las cantidades necesarias para 2 porciones de esta receta.`;
+    let prompt = `Eres un chef. Crea una receta usando solamente ingredientes de esta LISTA:${data.lista}.   Dame el resultado como si fueras una amiga, en forma casual, pero no sabes si yo soy hombre o mujer, asi que evita decirme "amigo" o "amiga".Empieza con "¡Aquí vamos!.No numeres los pasos. Puedes agregar alguna broma ligera. Rodea la palabra Maggi con los tags "<b>" y "</b>". Comienza con "Te propongo esta deliciosa receta para dos personas: ". Intercala una frase de estas "¿Te gusta?","¿OK?", "¡Muy bien!" . Menciona las cantidades necesarias para 2 porciones de esta receta.`;
 
-    const options = {
+    const configuration = new Configuration({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+    const openai = new OpenAIApi(configuration);
+    const completion = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      temperature: 0.1,
+      max_tokens: 800,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    console.log(completion.data.choices[0].message.content);
+    res.json({
+      completion: completion.data.choices[0].message.content,
+    });
+
+    /*  const options = {
       method: "POST",
       headers: {
         Authorization: `Bearer ${API_KEY}`,
@@ -38,10 +55,10 @@ app.post("/openai-api", async (req, res) => {
       );
       const response2 = await response.json();
       console.log(response2);
-      res.json(response2.choices[0].text);
+      //res.json(response2.choices[0].text);
     } catch (error) {
       console.log(error);
-    }
+    } */
   }
 });
 app.all("*", (req, res) => {
@@ -50,3 +67,10 @@ app.all("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`listening on PORT ${PORT}`);
 });
+
+/* const completionPromise = await openai.createChatCompletion({
+  model: "gpt-3.5-turbo",
+  temperature: 0.3,
+  max_tokens: 500,
+  messages: [{ role: "user", content: prePrompt }],
+}); */
